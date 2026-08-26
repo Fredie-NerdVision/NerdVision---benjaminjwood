@@ -1,0 +1,1 @@
+<?php /* publish-live smoke test */ echo 'NerdVision live'; ?>

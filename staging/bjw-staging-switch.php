@@ -67,13 +67,26 @@ function bjw_staging_choice() {
 }
 
 /**
+ * Whether this admin-context request handles a front-end submission, such as
+ * the contact form posting to admin-post.php. Those handlers live in the
+ * previewed theme, so the swap has to apply there too.
+ *
+ * @return bool
+ */
+function bjw_staging_is_front_end_endpoint() {
+	$script = isset( $_SERVER['SCRIPT_NAME'] ) ? basename( sanitize_text_field( wp_unslash( $_SERVER['SCRIPT_NAME'] ) ) ) : '';
+
+	return in_array( $script, array( 'admin-post.php', 'admin-ajax.php' ), true );
+}
+
+/**
  * Swap the active theme for this request only.
  *
  * @param string $theme Current theme directory.
  * @return string
  */
 function bjw_staging_theme( $theme ) {
-	if ( is_admin() ) {
+	if ( is_admin() && ! bjw_staging_is_front_end_endpoint() ) {
 		return $theme;
 	}
 

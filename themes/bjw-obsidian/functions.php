@@ -13,6 +13,7 @@ define( 'BJW_THEME_VERSION', '1.0.0' );
 define( 'BJW_THEME_SLUG', 'bjw-obsidian' );
 
 require_once get_template_directory() . '/inc/helpers.php';
+require_once get_template_directory() . '/inc/acf.php';
 require_once get_template_directory() . '/inc/tracks.php';
 require_once get_template_directory() . '/inc/contact.php';
 

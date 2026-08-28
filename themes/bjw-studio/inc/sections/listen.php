@@ -10,9 +10,9 @@ $bjw_tracks = bjw_get_tracks();
 <section class="section" id="listen">
 	<div class="shell">
 		<div class="section-head reveal">
-			<span class="mono"><?php esc_html_e( 'A / B Listening Room', 'bjw-studio' ); ?></span>
-			<h2><?php esc_html_e( 'Hear the Difference', 'bjw-studio' ); ?></h2>
-			<p><?php esc_html_e( 'Both renders play in perfect sync. Mute, solo or crossfade between them to hear exactly what changed.', 'bjw-studio' ); ?></p>
+			<span class="mono"><?php echo esc_html( bjw_field( 'listen_eyebrow', __( 'A / B Listening Room', 'bjw-studio' ) ) ); ?></span>
+			<h2><?php echo esc_html( bjw_field( 'listen_heading', __( 'Hear the Difference', 'bjw-studio' ) ) ); ?></h2>
+			<p><?php echo esc_html( bjw_field( 'listen_intro', __( 'Both renders play in perfect sync. Mute, solo or crossfade between them to hear exactly what changed.', 'bjw-studio' ) ) ); ?></p>
 		</div>
 
 		<div class="rack reveal" data-tandem>

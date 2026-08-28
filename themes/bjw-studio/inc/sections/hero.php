@@ -15,12 +15,12 @@
 			</div>
 
 			<div class="rack__body">
-				<p class="hero__kicker"><?php esc_html_e( 'Composer | Producer | Audio Engineer', 'bjw-studio' ); ?></p>
-				<h1 class="hero__title"><?php esc_html_e( 'Benjamin', 'bjw-studio' ); ?> <em><?php esc_html_e( 'J. Wood', 'bjw-studio' ); ?></em></h1>
-				<p class="hero__lede"><?php esc_html_e( 'Crafting emotional depth and sonic perfection for film, games, and media.', 'bjw-studio' ); ?></p>
+				<p class="hero__kicker"><?php echo esc_html( bjw_field( 'hero_kicker', __( 'Composer | Producer | Audio Engineer', 'bjw-studio' ) ) ); ?></p>
+				<h1 class="hero__title"><?php echo esc_html( bjw_field( 'hero_title', __( 'Benjamin', 'bjw-studio' ) ) ); ?> <em><?php echo esc_html( bjw_field( 'hero_title_accent', __( 'J. Wood', 'bjw-studio' ) ) ); ?></em></h1>
+				<p class="hero__lede"><?php echo esc_html( bjw_field( 'hero_lede', __( 'Crafting emotional depth and sonic perfection for film, games, and media.', 'bjw-studio' ) ) ); ?></p>
 
 				<div class="hero__actions">
-					<a class="btn" href="#contact"><?php esc_html_e( 'Start a Project', 'bjw-studio' ); ?></a>
+					<a class="btn" href="#contact"><?php echo esc_html( bjw_field( 'hero_cta', __( 'Start a Project', 'bjw-studio' ) ) ); ?></a>
 					<a class="btn btn--ghost" href="#listen"><?php esc_html_e( 'Open A/B Room', 'bjw-studio' ); ?></a>
 				</div>
 

@@ -10,8 +10,8 @@ $bjw_tracks = bjw_get_tracks();
 <section class="section surface-marble-dark" id="listen">
 	<div class="shell">
 		<div class="section-head section-head--center reveal">
-			<p class="eyebrow"><?php esc_html_e( 'A / B Listening Room', 'bjw-obsidian' ); ?></p>
-			<h2><?php esc_html_e( 'Hear the Difference', 'bjw-obsidian' ); ?></h2>
+			<p class="eyebrow"><?php echo esc_html( bjw_field( 'listen_eyebrow', __( 'A / B Listening Room', 'bjw-obsidian' ) ) ); ?></p>
+			<h2><?php echo esc_html( bjw_field( 'listen_heading', __( 'Hear the Difference', 'bjw-obsidian' ) ) ); ?></h2>
 			<div class="rule"></div>
 		</div>
 
@@ -19,7 +19,7 @@ $bjw_tracks = bjw_get_tracks();
 			<div class="ab__head">
 				<div>
 					<h3 class="ab__title"><?php esc_html_e( 'Two versions. One playhead.', 'bjw-obsidian' ); ?></h3>
-					<p class="ab__note"><?php esc_html_e( 'Both renders play in perfect sync. Mute, solo or crossfade between them to hear exactly what changed.', 'bjw-obsidian' ); ?></p>
+					<p class="ab__note"><?php echo esc_html( bjw_field( 'listen_intro', __( 'Both renders play in perfect sync. Mute, solo or crossfade between them to hear exactly what changed.', 'bjw-obsidian' ) ) ); ?></p>
 				</div>
 
 				<div class="ab__tracks" role="group" aria-label="<?php esc_attr_e( 'Choose a track', 'bjw-obsidian' ); ?>">

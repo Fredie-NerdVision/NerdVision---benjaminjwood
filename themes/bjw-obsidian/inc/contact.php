@@ -37,7 +37,7 @@ function bjw_handle_inquiry() {
 		exit;
 	}
 
-	$to      = apply_filters( 'bjw_inquiry_recipient', get_option( 'admin_email' ) );
+	$to      = apply_filters( 'bjw_inquiry_recipient', bjw_field( 'contact_email', get_option( 'admin_email' ) ) );
 	$subject = sprintf( '[%s] New inquiry from %s', get_bloginfo( 'name' ), $name );
 	$body    = "Name: {$name}\nEmail: {$email}\nService: {$service}\n\n{$message}\n";
 	$headers = array( 'Reply-To: ' . $name . ' <' . $email . '>' );

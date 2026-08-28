@@ -13,18 +13,18 @@ $bjw_action = function_exists( 'admin_url' ) ? admin_url( 'admin-post.php' ) : '
 		<div class="rack reveal">
 			<div class="rack__bar">
 				<span class="rack__screws"><i></i><i></i></span>
-				<span class="rack__name"><?php esc_html_e( 'Get In Touch', 'bjw-studio' ); ?></span>
+				<span class="rack__name"><?php echo esc_html( bjw_field( 'contact_eyebrow', __( 'Get In Touch', 'bjw-studio' ) ) ); ?></span>
 				<span class="rack__led"><?php esc_html_e( 'Open', 'bjw-studio' ); ?></span>
 			</div>
 
 			<div class="rack__body">
 				<div class="section-head">
-					<h2><?php esc_html_e( "Let's Collaborate", 'bjw-studio' ); ?></h2>
+					<h2><?php echo esc_html( bjw_field( 'contact_heading', __( "Let's Collaborate", 'bjw-studio' ) ) ); ?></h2>
 				</div>
 
 				<div class="contact-grid">
 					<div class="contact-aside">
-						<p><?php esc_html_e( 'Ready to infuse your project with world-class audio? Contact me to discuss your needs.', 'bjw-studio' ); ?></p>
+						<p><?php echo esc_html( bjw_field( 'contact_intro', __( 'Ready to infuse your project with world-class audio? Contact me to discuss your needs.', 'bjw-studio' ) ) ); ?></p>
 						<?php if ( 'sent' === $bjw_status ) : ?>
 							<p class="mono" style="color:var(--moss)"><?php esc_html_e( 'Thank you — your inquiry is on its way.', 'bjw-studio' ); ?></p>
 						<?php elseif ( $bjw_status ) : ?>

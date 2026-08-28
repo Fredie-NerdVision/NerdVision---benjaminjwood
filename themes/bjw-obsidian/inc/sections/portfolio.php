@@ -5,28 +5,33 @@
  * @package bjw-obsidian
  */
 
-$bjw_works = array(
+$bjw_works = bjw_rows(
+	'works',
 	array(
-		'title' => __( 'The Last Signal', 'bjw-obsidian' ),
-		'meta'  => __( 'Film Score - Orchestral & Synth', 'bjw-obsidian' ),
-	),
-	array(
-		'title' => __( "Echoes of K'lar", 'bjw-obsidian' ),
-		'meta'  => __( 'Video Game Soundtrack', 'bjw-obsidian' ),
-	),
+		array(
+			'title' => __( 'The Last Signal', 'bjw-obsidian' ),
+			'meta'  => __( 'Film Score - Orchestral & Synth', 'bjw-obsidian' ),
+			'link'  => '',
+		),
+		array(
+			'title' => __( "Echoes of K'lar", 'bjw-obsidian' ),
+			'meta'  => __( 'Video Game Soundtrack', 'bjw-obsidian' ),
+			'link'  => '',
+		),
+	)
 );
 ?>
 <section class="section surface-ink" id="portfolio">
 	<div class="shell">
 		<div class="section-head section-head--center reveal">
-			<p class="eyebrow"><?php esc_html_e( 'Selected Work', 'bjw-obsidian' ); ?></p>
-			<h2><?php esc_html_e( 'My Portfolio Highlights', 'bjw-obsidian' ); ?></h2>
+			<p class="eyebrow"><?php echo esc_html( bjw_field( 'portfolio_eyebrow', __( 'Selected Work', 'bjw-obsidian' ) ) ); ?></p>
+			<h2><?php echo esc_html( bjw_field( 'portfolio_heading', __( 'My Portfolio Highlights', 'bjw-obsidian' ) ) ); ?></h2>
 			<div class="rule"></div>
 		</div>
 
 		<div class="work-grid">
 			<?php foreach ( $bjw_works as $bjw_work ) : ?>
-				<a class="work reveal" href="#">
+				<a class="work reveal" href="<?php echo esc_url( empty( $bjw_work['link'] ) ? '#' : $bjw_work['link'] ); ?>">
 					<div class="work__body">
 						<span class="work__meta"><?php echo esc_html( $bjw_work['meta'] ); ?></span>
 						<h4><?php echo esc_html( $bjw_work['title'] ); ?></h4>

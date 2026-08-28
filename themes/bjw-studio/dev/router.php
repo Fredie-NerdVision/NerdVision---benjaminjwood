@@ -17,5 +17,6 @@ if ( '/' !== $path && file_exists( $file ) && ! is_dir( $file ) && 'php' !== pat
 
 require __DIR__ . '/wp-stubs.php';
 require get_template_directory() . '/inc/helpers.php';
+require get_template_directory() . '/inc/acf.php';
 require get_template_directory() . '/inc/tracks.php';
 require get_template_directory() . '/front-page.php';

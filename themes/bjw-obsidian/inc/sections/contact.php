@@ -11,14 +11,14 @@ $bjw_action = function_exists( 'admin_url' ) ? admin_url( 'admin-post.php' ) : '
 <section class="section surface-marble-light" id="contact">
 	<div class="shell">
 		<div class="section-head section-head--center reveal">
-			<p class="eyebrow"><?php esc_html_e( 'Get In Touch', 'bjw-obsidian' ); ?></p>
-			<h2><?php esc_html_e( "Let's Collaborate", 'bjw-obsidian' ); ?></h2>
+			<p class="eyebrow"><?php echo esc_html( bjw_field( 'contact_eyebrow', __( 'Get In Touch', 'bjw-obsidian' ) ) ); ?></p>
+			<h2><?php echo esc_html( bjw_field( 'contact_heading', __( "Let's Collaborate", 'bjw-obsidian' ) ) ); ?></h2>
 			<div class="rule"></div>
 		</div>
 
 		<div class="contact-grid">
 			<div class="contact-aside reveal">
-				<p><?php esc_html_e( 'Ready to infuse your project with world-class audio? Contact me to discuss your needs.', 'bjw-obsidian' ); ?></p>
+				<p><?php echo esc_html( bjw_field( 'contact_intro', __( 'Ready to infuse your project with world-class audio? Contact me to discuss your needs.', 'bjw-obsidian' ) ) ); ?></p>
 				<?php if ( 'sent' === $bjw_status ) : ?>
 					<p><strong><?php esc_html_e( 'Thank you — your inquiry is on its way.', 'bjw-obsidian' ); ?></strong></p>
 				<?php elseif ( $bjw_status && 'sent' !== $bjw_status ) : ?>

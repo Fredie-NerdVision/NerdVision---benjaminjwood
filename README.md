@@ -15,8 +15,21 @@ sync. Visitors can mute, solo, gain-trim or crossfade either side, and the stick
 play/pause, prev/next, seeking and quick A/B switching. Both files for a track must be the same length.
 
 Tracks are managed in wp-admin under **Tracks** (`bjw_track` post type). Each track stores a label and
-file URL for version A and B plus an artist name. With no tracks published the theme falls back to
+audio file for version A and B plus an artist name. With no tracks published the theme falls back to
 demo tracks defined in `inc/tracks.php`.
+
+## Editing content (ACF)
+
+Field groups are registered in code (`inc/acf.php`), so nothing has to be rebuilt in the ACF UI — the
+themes ship ready to edit:
+
+- **Tracks** — Advanced Custom Fields renders the tandem audio fields (file pickers for the two
+  renders). Without ACF, an equivalent native meta box is shown instead, so the site never depends on
+  the plugin.
+- **Site Content** — an ACF Pro options page covering the hero, about, services, A/B room, portfolio
+  and contact copy, including repeaters for the service strips and portfolio entries and the inquiry
+  recipient address. Every value falls back to the copy baked into the templates when it is empty or
+  ACF Pro is not installed.
 
 ## Installing
 

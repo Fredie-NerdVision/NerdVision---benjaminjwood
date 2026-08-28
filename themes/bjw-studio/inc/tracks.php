@@ -113,8 +113,15 @@ function bjw_track_fields() {
 
 /**
  * Register the editor meta box.
+ *
+ * ACF registers the same field names, so the native box only appears when the
+ * plugin is missing.
  */
 function bjw_track_meta_box() {
+	if ( bjw_acf_active() ) {
+		return;
+	}
+
 	add_meta_box(
 		'bjw_track_meta',
 		__( 'Tandem Audio', 'bjw-studio' ),
@@ -154,6 +161,9 @@ function bjw_render_track_meta_box( $post ) {
  * @param int $post_id Post ID.
  */
 function bjw_save_track_meta( $post_id ) {
+	if ( bjw_acf_active() ) {
+		return;
+	}
 	if ( ! isset( $_POST['bjw_track_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['bjw_track_nonce'] ) ), 'bjw_save_track' ) ) {
 		return;
 	}
@@ -192,28 +202,42 @@ function bjw_get_published_tracks() {
 	$tracks = array();
 
 	foreach ( $posts as $post ) {
-		$a_src = get_post_meta( $post->ID, 'bjw_a_src', true );
-		$b_src = get_post_meta( $post->ID, 'bjw_b_src', true );
+		$a_src = bjw_track_value( $post->ID, 'bjw_a_src' );
+		$b_src = bjw_track_value( $post->ID, 'bjw_b_src' );
 
 		if ( ! $a_src || ! $b_src ) {
 			continue;
 		}
 
-		$artist = get_post_meta( $post->ID, 'bjw_artist', true );
+		$artist = bjw_track_value( $post->ID, 'bjw_artist' );
 
 		$tracks[] = array(
 			'title'  => get_the_title( $post ),
 			'artist' => $artist ? $artist : get_bloginfo( 'name' ),
 			'a'      => array(
-				'label' => get_post_meta( $post->ID, 'bjw_a_label', true ) ?: __( 'Version A', 'bjw-studio' ),
+				'label' => bjw_track_value( $post->ID, 'bjw_a_label' ) ?: __( 'Version A', 'bjw-studio' ),
 				'src'   => $a_src,
 			),
 			'b'      => array(
-				'label' => get_post_meta( $post->ID, 'bjw_b_label', true ) ?: __( 'Version B', 'bjw-studio' ),
+				'label' => bjw_track_value( $post->ID, 'bjw_b_label' ) ?: __( 'Version B', 'bjw-studio' ),
 				'src'   => $b_src,
 			),
 		);
 	}
 
 	return $tracks ? $tracks : bjw_default_tracks();
+}
+
+/**
+ * One track value, read through ACF when it is active so file fields resolve to
+ * URLs, and from plain post meta otherwise.
+ *
+ * @param int    $post_id Track ID.
+ * @param string $key     Field name.
+ * @return string
+ */
+function bjw_track_value( $post_id, $key ) {
+	$value = bjw_acf_active() ? get_field( $key, $post_id ) : get_post_meta( $post_id, $key, true );
+
+	return is_string( $value ) ? $value : '';
 }

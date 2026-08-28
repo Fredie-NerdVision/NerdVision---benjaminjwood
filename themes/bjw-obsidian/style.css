@@ -1,0 +1,16 @@
+/*
+Theme Name: BJW Obsidian
+Theme URI: https://benjaminjwood.com
+Author: NerdVision
+Author URI: https://nerdvision.tech
+Description: A premium obsidian-and-gold marble portfolio theme for composer, producer and audio engineer Benjamin J. Wood. Includes a tandem A/B audio player for comparing two versions of the same track.
+Version: 1.0.0
+Requires at least: 6.0
+Requires PHP: 7.4
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: bjw-obsidian
+Tags: one-column, custom-colors, custom-menu, portfolio, music
+*/
+
+/* Presentational styles live in assets/css/theme.css (enqueued from functions.php). */

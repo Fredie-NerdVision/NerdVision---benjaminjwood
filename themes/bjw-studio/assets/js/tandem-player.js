@@ -385,7 +385,9 @@
             var lane = this.lanes[key];
             if (!lane.meterBars.length) { return; }
 
-            var level = lane.muted ? 0 : lane.gain;
+            // The analyser is wired after the gain node, so its readings already
+            // carry the lane level; only the synthetic fallback needs scaling.
+            var level = lane.analyser ? 1 : (lane.muted ? 0 : lane.gain);
             var values;
 
             if (lane.analyser) {

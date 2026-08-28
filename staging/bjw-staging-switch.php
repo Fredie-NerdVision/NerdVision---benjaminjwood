@@ -119,6 +119,18 @@ function bjw_staging_bar() {
 		'studio'   => __( 'Version 2 — Studio', 'bjw-staging' ),
 	);
 	?>
+	<style>
+		@media (max-width: 900px) {
+			#bjw-staging-bar {
+				top: auto !important;
+				right: auto !important;
+				left: 12px;
+				bottom: 132px;
+				transform: scale(.85);
+				transform-origin: left bottom;
+			}
+		}
+	</style>
 	<div id="bjw-staging-bar" style="position:fixed;top:14px;right:14px;z-index:99999;display:flex;gap:6px;padding:6px;border-radius:999px;background:rgba(12,12,14,.82);backdrop-filter:blur(10px);box-shadow:0 8px 30px rgba(0,0,0,.35);font:600 12px/1 system-ui,-apple-system,'Segoe UI',sans-serif;">
 		<?php foreach ( $links as $slug => $label ) : ?>
 			<a href="<?php echo esc_url( add_query_arg( 'bjw', $slug, home_url( '/' ) ) ); ?>"

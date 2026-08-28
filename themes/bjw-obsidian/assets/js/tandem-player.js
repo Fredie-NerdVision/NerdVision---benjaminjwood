@@ -23,6 +23,19 @@
     var SYNC_TOLERANCE = 0.08;
     var METER_BARS = 18;
 
+    /**
+     * Media from another origin taints the element: the Web Audio graph would
+     * output silence, and requesting CORS outright fails on hosts that send no
+     * Access-Control-Allow-Origin. Such sources fall back to element volume.
+     */
+    function isSameOrigin(src) {
+        try {
+            return new URL(src, window.location.href).origin === window.location.origin;
+        } catch (err) {
+            return false;
+        }
+    }
+
     function fmt(seconds) {
         if (!isFinite(seconds) || seconds < 0) { return '0:00'; }
         var m = Math.floor(seconds / 60);
@@ -37,6 +50,9 @@
         this.playing = false;
         this.lanes = {};
         this.ctx = null;
+        this.graphSafe = tracks.every(function (track) {
+            return isSameOrigin(track.a.src) && isSameOrigin(track.b.src);
+        });
 
         this.el = {
             play: document.querySelector('[data-player-play]'),
@@ -64,7 +80,7 @@
             var wrap = self.root.querySelector('[data-lane="' + key + '"]');
             var audio = new Audio();
             audio.preload = 'metadata';
-            audio.crossOrigin = 'anonymous';
+            if (self.graphSafe) { audio.crossOrigin = 'anonymous'; }
 
             var lane = {
                 key: key,
@@ -324,7 +340,7 @@
     /* -------------------------------------------------------- audio graph */
 
     TandemPlayer.prototype.initAudioGraph = function () {
-        if (this.ctx) { return; }
+        if (this.ctx || !this.graphSafe) { return; }
         var Ctx = window.AudioContext || window.webkitAudioContext;
         if (!Ctx) { return; }
 

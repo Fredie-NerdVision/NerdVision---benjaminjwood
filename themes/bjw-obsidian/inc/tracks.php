@@ -7,6 +7,30 @@
  * @package bjw-obsidian
  */
 
+if ( ! function_exists( 'bjw_demo_audio' ) ) {
+	/**
+	 * Placeholder audio URL, preferring a self-hosted copy so the Web Audio
+	 * graph is not blocked by a cross-origin source. The two lanes of a demo
+	 * track are the same recording at the same length, one of them dulled, so
+	 * the A/B comparison behaves like a real pair of renders.
+	 *
+	 * @param int    $track Demo track number, 1-3.
+	 * @param string $lane  'a' or 'b'.
+	 * @return string
+	 */
+	function bjw_demo_audio( $track, $lane ) {
+		$file = 'bjw-demo-' . (int) $track . ( 'b' === $lane ? 'b' : 'a' ) . '.mp3';
+
+		if ( defined( 'WP_CONTENT_DIR' ) && function_exists( 'content_url' ) && file_exists( WP_CONTENT_DIR . '/uploads/bjw-demo/' . $file ) ) {
+			return content_url( '/uploads/bjw-demo/' . $file );
+		}
+
+		$remote = ( 2 * (int) $track ) - ( 'b' === $lane ? 1 : 0 );
+
+		return 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-' . $remote . '.mp3';
+	}
+}
+
 if ( ! function_exists( 'bjw_default_tracks' ) ) {
 	/**
 	 * Placeholder tracks used until real tandem tracks are published.
@@ -20,11 +44,11 @@ if ( ! function_exists( 'bjw_default_tracks' ) ) {
 				'artist' => 'Benjamin J. Wood',
 				'a'      => array(
 					'label' => 'Version A',
-					'src'   => 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+					'src'   => bjw_demo_audio( 1, 'a' ),
 				),
 				'b'      => array(
 					'label' => 'Version B',
-					'src'   => 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+					'src'   => bjw_demo_audio( 1, 'b' ),
 				),
 			),
 			array(
@@ -32,11 +56,11 @@ if ( ! function_exists( 'bjw_default_tracks' ) ) {
 				'artist' => 'Benjamin J. Wood',
 				'a'      => array(
 					'label' => 'Version A',
-					'src'   => 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+					'src'   => bjw_demo_audio( 2, 'a' ),
 				),
 				'b'      => array(
 					'label' => 'Version B',
-					'src'   => 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
+					'src'   => bjw_demo_audio( 2, 'b' ),
 				),
 			),
 			array(
@@ -44,11 +68,11 @@ if ( ! function_exists( 'bjw_default_tracks' ) ) {
 				'artist' => 'Benjamin J. Wood',
 				'a'      => array(
 					'label' => 'Version A',
-					'src'   => 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3',
+					'src'   => bjw_demo_audio( 3, 'a' ),
 				),
 				'b'      => array(
 					'label' => 'Version B',
-					'src'   => 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3',
+					'src'   => bjw_demo_audio( 3, 'b' ),
 				),
 			),
 		);

@@ -44,6 +44,19 @@ set it as the static front page (Settings → Reading) — the theme renders the
 Contact form submissions go through `admin-post.php` and are emailed with `wp_mail()` to the site admin
 address.
 
+## Staging comparison
+
+`staging/bjw-staging-switch.php` is a must-use plugin (drop it in `wp-content/mu-plugins/`) that swaps
+the rendered theme per request so a client can compare both designs on one URL:
+
+- `?bjw=obsidian` — version 1
+- `?bjw=studio` — version 2
+- `?bjw=off` — restore the site's own active theme
+
+The choice is remembered in a cookie, a floating switcher is rendered in the footer, and the staging
+site is kept out of search results while a design is being previewed. Nothing in the database changes,
+so removing the file returns the site to its original theme.
+
 ## Local design preview (no WordPress)
 
 Each theme ships a small stub harness so the layout can be rendered by PHP's built-in server:

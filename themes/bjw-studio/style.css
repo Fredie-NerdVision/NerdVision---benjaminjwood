@@ -1,0 +1,16 @@
+/*
+Theme Name: BJW Studio
+Theme URI: https://benjaminjwood.com
+Author: NerdVision
+Author URI: https://nerdvision.tech
+Description: A warm copper-and-walnut, console-inspired portfolio theme for composer, producer and audio engineer Benjamin J. Wood. Presents the site as a studio session, complete with a tandem A/B mixer for comparing two versions of the same track.
+Version: 1.0.0
+Requires at least: 6.0
+Requires PHP: 7.4
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: bjw-studio
+Tags: one-column, custom-colors, custom-menu, portfolio, music
+*/
+
+/* Presentational styles live in assets/css/theme.css (enqueued from functions.php). */

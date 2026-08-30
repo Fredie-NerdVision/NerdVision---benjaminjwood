@@ -36,6 +36,22 @@ function bjw_setup() {
 add_action( 'after_setup_theme', 'bjw_setup' );
 
 /**
+ * Asset URL version. Falls back to the theme version when the file is missing.
+ *
+ * Uses the file's modification time so a redeploy always busts browser and
+ * page caches, which a static version string does not.
+ *
+ * @param string $relative Path relative to the theme root.
+ * @return string
+ */
+function bjw_asset_version( $relative ) {
+	$path = get_template_directory() . $relative;
+	$time = file_exists( $path ) ? filemtime( $path ) : false;
+
+	return $time ? (string) $time : BJW_THEME_VERSION;
+}
+
+/**
  * Front-end assets.
  */
 function bjw_assets() {
@@ -48,12 +64,12 @@ function bjw_assets() {
 		null
 	);
 
-	wp_enqueue_style( 'bjw-theme', $uri . '/assets/css/theme.css', array( 'bjw-fonts' ), BJW_THEME_VERSION );
+	wp_enqueue_style( 'bjw-theme', $uri . '/assets/css/theme.css', array( 'bjw-fonts' ), bjw_asset_version( '/assets/css/theme.css' ) );
 
 	wp_add_inline_style( 'bjw-theme', bjw_inline_variables() );
 
-	wp_enqueue_script( 'bjw-site', $uri . '/assets/js/site.js', array(), BJW_THEME_VERSION, true );
-	wp_enqueue_script( 'bjw-tandem', $uri . '/assets/js/tandem-player.js', array(), BJW_THEME_VERSION, true );
+	wp_enqueue_script( 'bjw-site', $uri . '/assets/js/site.js', array(), bjw_asset_version( '/assets/js/site.js' ), true );
+	wp_enqueue_script( 'bjw-tandem', $uri . '/assets/js/tandem-player.js', array(), bjw_asset_version( '/assets/js/tandem-player.js' ), true );
 
 	wp_add_inline_script(
 		'bjw-tandem',

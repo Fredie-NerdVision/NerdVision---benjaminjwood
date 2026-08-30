@@ -32,6 +32,11 @@
 			</span>
 		</div>
 
+		<div class="player__volume">
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4zM17 9.2a4 4 0 0 1 0 5.6M19.6 6.6a7.5 7.5 0 0 1 0 10.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+			<input type="range" min="0" max="100" value="100" data-player-volume aria-label="<?php esc_attr_e( 'Volume', 'bjw-studio' ); ?>">
+		</div>
+
 		<div class="player__timeline">
 			<span class="player__time" data-player-current>0:00</span>
 			<div class="scrub" data-player-scrub role="slider" tabindex="0" aria-label="<?php esc_attr_e( 'Seek', 'bjw-studio' ); ?>" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">

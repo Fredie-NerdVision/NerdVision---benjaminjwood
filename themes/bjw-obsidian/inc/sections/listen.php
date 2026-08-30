@@ -33,15 +33,13 @@ $bjw_tracks = bjw_get_tracks();
 
 			<div class="ab__lanes">
 				<?php foreach ( array( 'a' => __( 'Channel A', 'bjw-obsidian' ), 'b' => __( 'Channel B', 'bjw-obsidian' ) ) as $bjw_key => $bjw_channel ) : ?>
-					<div class="lane" data-lane="<?php echo esc_attr( $bjw_key ); ?>">
+					<div class="lane<?php echo 'a' === $bjw_key ? ' is-solo' : ' is-muted'; ?>" data-lane="<?php echo esc_attr( $bjw_key ); ?>" role="button" tabindex="0" aria-pressed="<?php echo 'a' === $bjw_key ? 'true' : 'false'; ?>" aria-label="<?php echo esc_attr( sprintf( /* translators: %s: channel name. */ __( 'Hear %s', 'bjw-obsidian' ), $bjw_channel ) ); ?>">
 						<div class="lane__top">
 							<span class="lane__label">
 								<span class="lane__tag"><?php echo esc_html( strtoupper( $bjw_key ) ); ?></span>
 								<span data-lane-name><?php echo esc_html( $bjw_tracks[0][ $bjw_key ]['label'] ); ?></span>
 							</span>
-							<span class="lane__buttons">
-								<button type="button" class="lane__btn<?php echo 'a' === $bjw_key ? ' is-on' : ''; ?>" data-lane-solo aria-pressed="<?php echo 'a' === $bjw_key ? 'true' : 'false'; ?>" title="<?php echo esc_attr( sprintf( /* translators: %s: channel name. */ __( 'Hear %s', 'bjw-obsidian' ), $bjw_channel ) ); ?>"><?php esc_html_e( 'Listen', 'bjw-obsidian' ); ?></button>
-							</span>
+							<span class="lane__state"><?php esc_html_e( 'On air', 'bjw-obsidian' ); ?></span>
 						</div>
 
 						<div class="lane__meter" data-lane-meter aria-hidden="true"></div>

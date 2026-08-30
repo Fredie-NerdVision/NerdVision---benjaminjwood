@@ -66,7 +66,7 @@
 				</div>
 				<div class="rack__body">
 					<p style="margin:0;color:var(--muted);font-size:0.95rem">
-						<?php esc_html_e( 'Two versions of the same piece, running on one playhead. Mute either side to hear what changed.', 'bjw-studio' ); ?>
+						<?php esc_html_e( 'Two versions of the same piece, running on one playhead. Switch sides to hear what changed.', 'bjw-studio' ); ?>
 					</p>
 				</div>
 			</div>

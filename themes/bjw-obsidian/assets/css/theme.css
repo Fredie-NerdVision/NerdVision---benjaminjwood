@@ -532,9 +532,12 @@ h1, h2, h3, h4 {
     padding: 20px 22px;
     border: 1px solid rgba(255, 255, 255, 0.08);
     background: rgba(255, 255, 255, 0.02);
+    cursor: pointer;
     transition: border-color 0.3s ease, background 0.3s ease, opacity 0.3s ease;
 }
 
+.lane:hover { border-color: rgba(200, 162, 74, 0.45); }
+.lane:focus-visible { outline: 1px solid var(--gold); outline-offset: 3px; }
 .lane.is-muted { opacity: 0.42; }
 .lane.is-solo { border-color: var(--gold); background: rgba(200, 162, 74, 0.06); }
 
@@ -562,23 +565,19 @@ h1, h2, h3, h4 {
     color: var(--gold);
 }
 
-.lane__buttons { display: flex; gap: 8px; }
-
-.lane__btn {
-    min-width: 66px;
-    height: 30px;
-    padding: 0 12px;
-    text-transform: uppercase;
-    font-size: 0.64rem;
+.lane__state {
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-size: 0.58rem;
     font-weight: 600;
-    letter-spacing: 0.1em;
-    color: var(--muted);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    transition: all 0.22s ease;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #0b0b0c;
+    background: var(--gold);
+    transition: opacity 0.22s ease;
 }
 
-.lane__btn:hover { color: var(--text); border-color: rgba(255, 255, 255, 0.32); }
-.lane__btn.is-on { color: #0b0b0c; background: var(--gold); border-color: var(--gold); }
+.lane.is-muted .lane__state { opacity: 0; }
 
 .lane__meter {
     display: flex;
@@ -679,7 +678,7 @@ input[type="range"]::-moz-range-thumb {
 
 .player__inner {
     display: grid;
-    grid-template-columns: minmax(180px, 1fr) auto minmax(220px, 1.2fr);
+    grid-template-columns: minmax(160px, 1fr) auto auto minmax(200px, 1.1fr);
     align-items: center;
     gap: clamp(16px, 3vw, 40px);
     padding: 16px var(--gutter);
@@ -786,6 +785,22 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .player__ab button.is-on { color: #0b0b0c; background: var(--gold); border-color: var(--gold); }
+
+.player__volume {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: var(--muted);
+}
+
+.player__volume svg { width: 17px; height: 17px; flex: none; }
+
+.player__volume input[type="range"] {
+    flex: none;
+    width: 92px;
+    accent-color: var(--gold);
+    cursor: pointer;
+}
 
 /* ---------------------------------------------------------------- contact */
 
@@ -902,6 +917,7 @@ input[type="range"]::-moz-range-thumb {
 @media (max-width: 760px) {
     :root { --player-h: 152px; }
     .player__inner { grid-template-columns: 1fr auto; row-gap: 12px; }
-    .player__timeline { grid-column: 1 / -1; order: 3; }
+    .player__timeline { grid-column: 1 / -1; order: 4; }
+    .player__volume { grid-column: 1 / -1; order: 3; }
     .player__ab { order: 2; }
 }

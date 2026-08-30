@@ -244,6 +244,7 @@ function bjw_acf_content_fields() {
 	$fields[] = bjw_acf_field( 'listen_eyebrow', __( 'Eyebrow', 'bjw-studio' ) );
 	$fields[] = bjw_acf_field( 'listen_heading', __( 'Heading', 'bjw-studio' ) );
 	$fields[] = bjw_acf_field( 'listen_intro', __( 'Intro', 'bjw-studio' ), 'textarea' );
+	$fields[] = bjw_acf_tandem_repeater();
 
 	$fields[] = array(
 		'key'   => 'field_bjw_tab_portfolio',
@@ -283,6 +284,66 @@ function bjw_acf_content_fields() {
 	);
 
 	return $fields;
+}
+
+/**
+ * The paired-track repeater: one row is one song, holding both renders so a
+ * single selection fills both lanes of the player.
+ *
+ * @return array
+ */
+function bjw_acf_tandem_repeater() {
+	$file = function ( $name, $label, $instructions = '' ) {
+		return array(
+			'key'           => 'field_tandem_' . $name,
+			'name'          => $name,
+			'label'         => $label,
+			'type'          => 'file',
+			'return_format' => 'url',
+			'mime_types'    => 'mp3,wav,m4a,ogg',
+			'instructions'  => $instructions,
+		);
+	};
+
+	return array(
+		'key'          => 'field_bjw_tandem_tracks',
+		'name'         => 'tandem_tracks',
+		'label'        => __( 'Tracks', 'bjw-studio' ),
+		'type'         => 'repeater',
+		'layout'       => 'block',
+		'button_label' => __( 'Add track', 'bjw-studio' ),
+		'instructions' => __( 'One row per song. Pick both renders of that song — the pair fills version A and version B of the player, so they must be the same recording and the same length.', 'bjw-studio' ),
+		'sub_fields'   => array(
+			array(
+				'key'   => 'field_tandem_title',
+				'name'  => 'title',
+				'label' => __( 'Track title', 'bjw-studio' ),
+				'type'  => 'text',
+			),
+			array(
+				'key'   => 'field_tandem_artist',
+				'name'  => 'artist',
+				'label' => __( 'Artist', 'bjw-studio' ),
+				'type'  => 'text',
+			),
+			array(
+				'key'           => 'field_tandem_a_label',
+				'name'          => 'a_label',
+				'label'         => __( 'Version A label', 'bjw-studio' ),
+				'type'          => 'text',
+				'default_value' => __( 'Original', 'bjw-studio' ),
+			),
+			$file( 'a_src', __( 'Version A audio', 'bjw-studio' ), __( 'The untreated render.', 'bjw-studio' ) ),
+			array(
+				'key'           => 'field_tandem_b_label',
+				'name'          => 'b_label',
+				'label'         => __( 'Version B label', 'bjw-studio' ),
+				'type'          => 'text',
+				'default_value' => __( 'Treated', 'bjw-studio' ),
+			),
+			$file( 'b_src', __( 'Version B audio', 'bjw-studio' ), __( 'The same song after treatment. Leave empty while you only have one render — the player then plays version A in both lanes.', 'bjw-studio' ) ),
+		),
+	);
 }
 
 /**

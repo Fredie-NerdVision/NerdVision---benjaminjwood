@@ -28,7 +28,7 @@
 
 			<span class="player__ab">
 				<button type="button" class="is-on" data-player-ab="a" aria-pressed="true"><?php esc_html_e( 'A', 'bjw-studio' ); ?></button>
-				<button type="button" class="is-on" data-player-ab="b" aria-pressed="true"><?php esc_html_e( 'B', 'bjw-studio' ); ?></button>
+				<button type="button" data-player-ab="b" aria-pressed="false"><?php esc_html_e( 'B', 'bjw-studio' ); ?></button>
 			</span>
 		</div>
 

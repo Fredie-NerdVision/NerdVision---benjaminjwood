@@ -1,8 +1,10 @@
 /**
  * Tandem A/B player.
  *
- * Plays two renders of the same piece in perfect lockstep so a listener can
- * mute, solo or crossfade between them and hear exactly what changed.
+ * Plays two renders of the same piece in perfect lockstep, but only ever lets
+ * one of them be heard: switching lanes swaps the audible version instantly at
+ * the same point in the timeline, so the treatment is the only thing that
+ * changes. Both elements keep running, which is what makes the switch gapless.
  *
  * Markup contract (data attributes):
  *   [data-tandem]                 root element
@@ -10,12 +12,12 @@
  *   [data-lane="a"|"b"]           lane wrapper
  *   [data-lane-mute] [data-lane-solo] [data-lane-gain] [data-lane-name]
  *   [data-lane-meter]             container that receives meter bars
- *   [data-crossfade]              range input, 0 = full A, 100 = full B
+ *   [data-ab-switch="a"|"b"]      audition switch in the listening room
  *   [data-player-play] [data-player-prev] [data-player-next]
  *   [data-player-title] [data-player-artist]
  *   [data-player-current] [data-player-duration]
  *   [data-player-scrub] [data-player-fill]
- *   [data-player-ab="a"|"b"]      quick mute toggles in the sticky bar
+ *   [data-player-ab="a"|"b"]      audition switch in the sticky bar
  */
 (function () {
     'use strict';
@@ -48,6 +50,7 @@
         this.tracks = tracks;
         this.index = 0;
         this.playing = false;
+        this.active = 'a';
         this.lanes = {};
         this.ctx = null;
         this.graphSafe = tracks.every(function (track) {
@@ -63,8 +66,7 @@
             current: document.querySelector('[data-player-current]'),
             duration: document.querySelector('[data-player-duration]'),
             scrub: document.querySelector('[data-player-scrub]'),
-            fill: document.querySelector('[data-player-fill]'),
-            crossfade: root.querySelector('[data-crossfade]')
+            fill: document.querySelector('[data-player-fill]')
         };
 
         this.setupLanes();
@@ -87,8 +89,6 @@
                 wrap: wrap,
                 audio: audio,
                 gain: 1,
-                muted: false,
-                solo: false,
                 meterBars: [],
                 analyser: null,
                 gainNode: null,
@@ -114,7 +114,7 @@
 
                 var solo = wrap.querySelector('[data-lane-solo]');
                 if (solo) {
-                    solo.addEventListener('click', function () { self.toggleSolo(key); });
+                    solo.addEventListener('click', function () { self.setActive(key); });
                 }
 
                 var gain = wrap.querySelector('[data-lane-gain]');
@@ -129,22 +129,13 @@
             self.lanes[key] = lane;
         });
 
-        // Sticky-bar A/B toggles mirror the lane mute state.
-        Array.prototype.forEach.call(document.querySelectorAll('[data-player-ab]'), function (btn) {
-            btn.addEventListener('click', function () {
-                self.toggleMute(btn.getAttribute('data-player-ab'));
-            });
-        });
-
-        if (this.el.crossfade) {
-            this.el.crossfade.addEventListener('input', function () {
-                var pos = Number(self.el.crossfade.value) / 100;
-                self.lanes.a.gain = 1 - pos;
-                self.lanes.b.gain = pos;
-                self.syncGainInputs();
-                self.applyMix();
-            });
-        }
+        Array.prototype.forEach.call(
+            document.querySelectorAll('[data-player-ab], [data-ab-switch]'),
+            function (btn) {
+                var key = btn.getAttribute('data-player-ab') || btn.getAttribute('data-ab-switch');
+                btn.addEventListener('click', function () { self.setActive(key); });
+            }
+        );
 
         this.lanes.a.audio.addEventListener('loadedmetadata', function () {
             if (self.el.duration) { self.el.duration.textContent = fmt(self.lanes.a.audio.duration); }
@@ -200,6 +191,10 @@
             lane.audio.load();
             var name = lane.wrap && lane.wrap.querySelector('[data-lane-name]');
             if (name) { name.textContent = lane.data.label; }
+
+            Array.prototype.forEach.call(document.querySelectorAll('[data-ab-switch="' + key + '"]'), function (btn) {
+                btn.textContent = lane.data.label;
+            });
         }, this);
 
         if (this.el.title) { this.el.title.textContent = track.title; }
@@ -275,37 +270,25 @@
 
     /* ---------------------------------------------------------------- mix */
 
+    /**
+     * Audition a lane. The other one keeps playing silently so switching back
+     * lands on the same instant of the piece.
+     */
+    TandemPlayer.prototype.setActive = function (key) {
+        if (!this.lanes[key]) { return; }
+        this.active = key;
+        this.applyMix();
+    };
+
     TandemPlayer.prototype.toggleMute = function (key) {
-        var lane = this.lanes[key];
-        if (!lane) { return; }
-        lane.muted = !lane.muted;
-        if (!lane.muted) { lane.solo = false; }
-        this.applyMix();
-    };
-
-    TandemPlayer.prototype.toggleSolo = function (key) {
-        var lane = this.lanes[key];
-        if (!lane) { return; }
-        var other = this.lanes[key === 'a' ? 'b' : 'a'];
-        lane.solo = !lane.solo;
-        other.solo = false;
-        lane.muted = false;
-        other.muted = lane.solo;
-        this.applyMix();
-    };
-
-    TandemPlayer.prototype.syncGainInputs = function () {
-        ['a', 'b'].forEach(function (key) {
-            var lane = this.lanes[key];
-            var input = lane.wrap && lane.wrap.querySelector('[data-lane-gain]');
-            if (input) { input.value = Math.round(lane.gain * 100); }
-        }, this);
+        this.setActive(this.active === key ? (key === 'a' ? 'b' : 'a') : key);
     };
 
     TandemPlayer.prototype.applyMix = function () {
         ['a', 'b'].forEach(function (key) {
             var lane = this.lanes[key];
-            var level = lane.muted ? 0 : lane.gain;
+            var audible = key === this.active;
+            var level = audible ? lane.gain : 0;
 
             if (lane.gainNode) {
                 lane.gainNode.gain.value = level;
@@ -314,26 +297,32 @@
                 lane.audio.volume = level;
             }
 
+            // Belt and braces: a muted element is silent even if the Web Audio
+            // graph failed to build, so two versions can never overlap.
+            lane.audio.muted = !audible;
+
             if (lane.wrap) {
-                lane.wrap.classList.toggle('is-muted', lane.muted || level === 0);
-                lane.wrap.classList.toggle('is-solo', lane.solo);
+                lane.wrap.classList.toggle('is-muted', !audible);
+                lane.wrap.classList.toggle('is-solo', audible);
                 var mute = lane.wrap.querySelector('[data-lane-mute]');
                 var solo = lane.wrap.querySelector('[data-lane-solo]');
                 if (mute) {
-                    mute.classList.toggle('is-on', lane.muted);
-                    mute.setAttribute('aria-pressed', String(lane.muted));
+                    mute.classList.toggle('is-on', !audible);
+                    mute.setAttribute('aria-pressed', String(!audible));
                 }
                 if (solo) {
-                    solo.classList.toggle('is-on', lane.solo);
-                    solo.setAttribute('aria-pressed', String(lane.solo));
+                    solo.classList.toggle('is-on', audible);
+                    solo.setAttribute('aria-pressed', String(audible));
                 }
             }
 
-            var quick = document.querySelector('[data-player-ab="' + key + '"]');
-            if (quick) {
-                quick.classList.toggle('is-on', !lane.muted);
-                quick.setAttribute('aria-pressed', String(!lane.muted));
-            }
+            Array.prototype.forEach.call(
+                document.querySelectorAll('[data-player-ab="' + key + '"], [data-ab-switch="' + key + '"]'),
+                function (btn) {
+                    btn.classList.toggle('is-on', audible);
+                    btn.setAttribute('aria-pressed', String(audible));
+                }
+            );
         }, this);
     };
 
@@ -403,7 +392,8 @@
 
             // The analyser is wired after the gain node, so its readings already
             // carry the lane level; only the synthetic fallback needs scaling.
-            var level = lane.analyser ? 1 : (lane.muted ? 0 : lane.gain);
+            var audible = key === this.active;
+            var level = lane.analyser ? 1 : (audible ? lane.gain : 0);
             var values;
 
             if (lane.analyser) {

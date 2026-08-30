@@ -576,8 +576,11 @@ h1, h2, h3, h4 {
 .lane__buttons { display: flex; gap: 6px; }
 
 .lane__btn {
-    width: 30px;
+    min-width: 62px;
     height: 26px;
+    padding: 0 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
     border-radius: 6px;
     font-family: var(--mono);
     font-size: 0.62rem;
@@ -643,10 +646,11 @@ input[type="range"]::-moz-range-thumb {
     background: linear-gradient(180deg, #e7c69a, #9d6a3c);
 }
 
-.mixer__crossfade {
+.mixer__switch {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
     margin-top: 20px;
     padding: 16px 18px;
     border-radius: 9px;
@@ -654,12 +658,32 @@ input[type="range"]::-moz-range-thumb {
     background: rgba(0, 0, 0, 0.2);
 }
 
-.mixer__crossfade span {
-    font-family: var(--mono);
+.mixer__switch .mono {
     font-size: 0.62rem;
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--dim);
+}
+
+.mixer__switch-btn {
+    padding: 10px 20px;
+    border-radius: 7px;
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border: 1px solid var(--panel-edge);
+    background: rgba(0, 0, 0, 0.24);
+    transition: all 0.18s ease;
+}
+
+.mixer__switch-btn:hover { color: var(--sand); }
+
+.mixer__switch-btn.is-on {
+    color: #23150d;
+    background: linear-gradient(160deg, var(--brass), #b98a2f);
+    border-color: transparent;
 }
 
 /* ---------------------------------------------------------- sticky player */

@@ -19,7 +19,7 @@ $bjw_tracks = bjw_get_tracks();
 			<div class="ab__head">
 				<div>
 					<h3 class="ab__title"><?php esc_html_e( 'Two versions. One playhead.', 'bjw-obsidian' ); ?></h3>
-					<p class="ab__note"><?php echo esc_html( bjw_field( 'listen_intro', __( 'Both renders play in perfect sync. Mute, solo or crossfade between them to hear exactly what changed.', 'bjw-obsidian' ) ) ); ?></p>
+					<p class="ab__note"><?php echo esc_html( bjw_field( 'listen_intro', __( 'Both renders run on one playhead and only one is ever audible. Switch between them mid-phrase to hear exactly what changed.', 'bjw-obsidian' ) ) ); ?></p>
 				</div>
 
 				<div class="ab__tracks" role="group" aria-label="<?php esc_attr_e( 'Choose a track', 'bjw-obsidian' ); ?>">
@@ -40,8 +40,7 @@ $bjw_tracks = bjw_get_tracks();
 								<span data-lane-name><?php echo esc_html( $bjw_tracks[0][ $bjw_key ]['label'] ); ?></span>
 							</span>
 							<span class="lane__buttons">
-								<button type="button" class="lane__btn" data-lane-mute aria-pressed="false" title="<?php esc_attr_e( 'Mute', 'bjw-obsidian' ); ?>"><?php esc_html_e( 'M', 'bjw-obsidian' ); ?></button>
-								<button type="button" class="lane__btn" data-lane-solo aria-pressed="false" title="<?php esc_attr_e( 'Solo', 'bjw-obsidian' ); ?>"><?php esc_html_e( 'S', 'bjw-obsidian' ); ?></button>
+								<button type="button" class="lane__btn<?php echo 'a' === $bjw_key ? ' is-on' : ''; ?>" data-lane-solo aria-pressed="<?php echo 'a' === $bjw_key ? 'true' : 'false'; ?>" title="<?php echo esc_attr( sprintf( /* translators: %s: channel name. */ __( 'Hear %s', 'bjw-obsidian' ), $bjw_channel ) ); ?>"><?php esc_html_e( 'Listen', 'bjw-obsidian' ); ?></button>
 							</span>
 						</div>
 
@@ -55,11 +54,14 @@ $bjw_tracks = bjw_get_tracks();
 				<?php endforeach; ?>
 			</div>
 
-			<label class="ab__crossfade">
-				<span><?php esc_html_e( 'A', 'bjw-obsidian' ); ?></span>
-				<input type="range" min="0" max="100" value="50" data-crossfade aria-label="<?php esc_attr_e( 'Crossfade between version A and version B', 'bjw-obsidian' ); ?>">
-				<span><?php esc_html_e( 'B', 'bjw-obsidian' ); ?></span>
-			</label>
+			<div class="ab__switch" role="group" aria-label="<?php esc_attr_e( 'Choose the version you hear', 'bjw-obsidian' ); ?>">
+				<span class="ab__switch-label"><?php esc_html_e( 'Now hearing', 'bjw-obsidian' ); ?></span>
+				<?php foreach ( array( 'a', 'b' ) as $bjw_key ) : ?>
+					<button type="button" class="ab__switch-btn<?php echo 'a' === $bjw_key ? ' is-on' : ''; ?>" data-ab-switch="<?php echo esc_attr( $bjw_key ); ?>" aria-pressed="<?php echo 'a' === $bjw_key ? 'true' : 'false'; ?>">
+						<?php echo esc_html( $bjw_tracks[0][ $bjw_key ]['label'] ); ?>
+					</button>
+				<?php endforeach; ?>
+			</div>
 		</div>
 	</div>
 </section>

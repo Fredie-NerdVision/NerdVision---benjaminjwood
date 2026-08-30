@@ -7,33 +7,33 @@
  * @package bjw-studio
  */
 
-if ( ! function_exists( 'bjw_demo_audio' ) ) {
+if ( ! function_exists( 'bjw_track_audio' ) ) {
 	/**
-	 * Placeholder audio URL, preferring a self-hosted copy so the Web Audio
-	 * graph is not blocked by a cross-origin source. The two lanes of a demo
-	 * track are the same recording at the same length, one of them dulled, so
-	 * the A/B comparison behaves like a real pair of renders.
+	 * URL of a track shipped with the site, self-hosted so the Web Audio graph
+	 * is never blocked by a cross-origin source.
 	 *
-	 * @param int    $track Demo track number, 1-3.
-	 * @param string $lane  'a' or 'b'.
+	 * @param string $slug File slug under uploads/bjw-audio.
 	 * @return string
 	 */
-	function bjw_demo_audio( $track, $lane ) {
-		$file = 'bjw-demo-' . (int) $track . ( 'b' === $lane ? 'b' : 'a' ) . '.mp3';
+	function bjw_track_audio( $slug ) {
+		$path = '/uploads/bjw-audio/' . $slug . '.mp3';
 
-		if ( defined( 'WP_CONTENT_DIR' ) && function_exists( 'content_url' ) && file_exists( WP_CONTENT_DIR . '/uploads/bjw-demo/' . $file ) ) {
-			return content_url( '/uploads/bjw-demo/' . $file );
+		if ( function_exists( 'content_url' ) ) {
+			return content_url( $path );
 		}
 
-		$remote = ( 2 * (int) $track ) - ( 'b' === $lane ? 1 : 0 );
-
-		return 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-' . $remote . '.mp3';
+		return '/wp-content' . $path;
 	}
 }
 
 if ( ! function_exists( 'bjw_default_tracks' ) ) {
 	/**
-	 * Placeholder tracks used until real tandem tracks are published.
+	 * Tracks shipped with the theme, used until tandem tracks are published or
+	 * entered on the Site Content screen.
+	 *
+	 * Both lanes point at the same recording for now: only one render of each
+	 * piece exists, so version B is a stand-in until the treated render is
+	 * dropped in.
 	 *
 	 * @return array
 	 */
@@ -43,36 +43,72 @@ if ( ! function_exists( 'bjw_default_tracks' ) ) {
 				'title'  => 'Novella',
 				'artist' => 'Benjamin J. Wood',
 				'a'      => array(
-					'label' => 'Version A',
-					'src'   => bjw_demo_audio( 1, 'a' ),
+					'label' => 'Original',
+					'src'   => bjw_track_audio( 'novella' ),
 				),
 				'b'      => array(
-					'label' => 'Version B',
-					'src'   => bjw_demo_audio( 1, 'b' ),
+					'label' => 'Treated (placeholder)',
+					'src'   => bjw_track_audio( 'novella' ),
 				),
 			),
 			array(
 				'title'  => 'Eudaimonia (Orchestral Version)',
-				'artist' => 'Benjamin J. Wood',
+				'artist' => 'Benjamin J. Wood, Shubh Saran',
 				'a'      => array(
-					'label' => 'Version A',
-					'src'   => bjw_demo_audio( 2, 'a' ),
+					'label' => 'Original',
+					'src'   => bjw_track_audio( 'eudaimonia' ),
 				),
 				'b'      => array(
-					'label' => 'Version B',
-					'src'   => bjw_demo_audio( 2, 'b' ),
+					'label' => 'Treated (placeholder)',
+					'src'   => bjw_track_audio( 'eudaimonia' ),
+				),
+			),
+			array(
+				'title'  => 'I Bow Deeply',
+				'artist' => 'Benjamin J. Wood',
+				'a'      => array(
+					'label' => 'Original',
+					'src'   => bjw_track_audio( 'i-bow-deeply' ),
+				),
+				'b'      => array(
+					'label' => 'Treated (placeholder)',
+					'src'   => bjw_track_audio( 'i-bow-deeply' ),
 				),
 			),
 			array(
 				'title'  => 'Circumbinary',
 				'artist' => 'Benjamin J. Wood',
 				'a'      => array(
-					'label' => 'Version A',
-					'src'   => bjw_demo_audio( 3, 'a' ),
+					'label' => 'Original',
+					'src'   => bjw_track_audio( 'circumbinary' ),
 				),
 				'b'      => array(
-					'label' => 'Version B',
-					'src'   => bjw_demo_audio( 3, 'b' ),
+					'label' => 'Treated (placeholder)',
+					'src'   => bjw_track_audio( 'circumbinary' ),
+				),
+			),
+			array(
+				'title'  => 'Bird',
+				'artist' => 'Benjamin J. Wood, Rebecca Hayes',
+				'a'      => array(
+					'label' => 'Original',
+					'src'   => bjw_track_audio( 'bird' ),
+				),
+				'b'      => array(
+					'label' => 'Treated (placeholder)',
+					'src'   => bjw_track_audio( 'bird' ),
+				),
+			),
+			array(
+				'title'  => 'Immigrant Song',
+				'artist' => 'Benjamin J. Wood',
+				'a'      => array(
+					'label' => 'Original',
+					'src'   => bjw_track_audio( 'immigrant-song' ),
+				),
+				'b'      => array(
+					'label' => 'Treated (placeholder)',
+					'src'   => bjw_track_audio( 'immigrant-song' ),
 				),
 			),
 		);
@@ -90,7 +126,49 @@ function bjw_get_tracks() {
 		return bjw_default_tracks();
 	}
 
-	return bjw_get_published_tracks();
+	$rows = bjw_acf_paired_tracks();
+
+	return $rows ? $rows : bjw_get_published_tracks();
+}
+
+/**
+ * Tracks entered as pairs on the Site Content screen (ACF Pro repeater).
+ *
+ * A row with only the first render still works: both lanes play it, so the
+ * treated version can be dropped in later without touching anything else.
+ *
+ * @return array
+ */
+function bjw_acf_paired_tracks() {
+	if ( ! function_exists( 'bjw_rows' ) || ! bjw_acf_active() || ! bjw_acf_pro() ) {
+		return array();
+	}
+
+	$tracks = array();
+
+	foreach ( bjw_rows( 'tandem_tracks', array() ) as $row ) {
+		$a_src = isset( $row['a_src'] ) ? $row['a_src'] : '';
+		$b_src = isset( $row['b_src'] ) && $row['b_src'] ? $row['b_src'] : $a_src;
+
+		if ( ! $a_src ) {
+			continue;
+		}
+
+		$tracks[] = array(
+			'title'  => isset( $row['title'] ) && $row['title'] ? $row['title'] : __( 'Untitled', 'bjw-studio' ),
+			'artist' => isset( $row['artist'] ) && $row['artist'] ? $row['artist'] : get_bloginfo( 'name' ),
+			'a'      => array(
+				'label' => isset( $row['a_label'] ) && $row['a_label'] ? $row['a_label'] : __( 'Original', 'bjw-studio' ),
+				'src'   => $a_src,
+			),
+			'b'      => array(
+				'label' => isset( $row['b_label'] ) && $row['b_label'] ? $row['b_label'] : __( 'Treated', 'bjw-studio' ),
+				'src'   => $b_src,
+			),
+		);
+	}
+
+	return $tracks;
 }
 
 if ( ! function_exists( 'add_action' ) ) {
@@ -229,8 +307,12 @@ function bjw_get_published_tracks() {
 		$a_src = bjw_track_value( $post->ID, 'bjw_a_src' );
 		$b_src = bjw_track_value( $post->ID, 'bjw_b_src' );
 
-		if ( ! $a_src || ! $b_src ) {
+		if ( ! $a_src ) {
 			continue;
+		}
+
+		if ( ! $b_src ) {
+			$b_src = $a_src;
 		}
 
 		$artist = bjw_track_value( $post->ID, 'bjw_artist' );

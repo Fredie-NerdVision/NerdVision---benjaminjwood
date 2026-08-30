@@ -565,8 +565,10 @@ h1, h2, h3, h4 {
 .lane__buttons { display: flex; gap: 8px; }
 
 .lane__btn {
-    width: 34px;
+    min-width: 66px;
     height: 30px;
+    padding: 0 12px;
+    text-transform: uppercase;
     font-size: 0.64rem;
     font-weight: 600;
     letter-spacing: 0.1em;
@@ -624,21 +626,41 @@ input[type="range"]::-moz-range-thumb {
     background: var(--gold);
 }
 
-.ab__crossfade {
+.ab__switch {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
     margin-top: 26px;
     padding-top: 22px;
     border-top: 1px solid rgba(255, 255, 255, 0.07);
 }
 
-.ab__crossfade span {
+.ab__switch-label {
     font-size: 0.64rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--muted);
     white-space: nowrap;
+}
+
+.ab__switch-btn {
+    padding: 11px 22px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    transition: all 0.22s ease;
+}
+
+.ab__switch-btn:hover { color: var(--text); border-color: rgba(255, 255, 255, 0.32); }
+
+.ab__switch-btn.is-on {
+    color: #0b0b0c;
+    background: linear-gradient(180deg, #f0d6ab, var(--gold));
+    border-color: var(--gold);
 }
 
 /* ---------------------------------------------------------- sticky player */

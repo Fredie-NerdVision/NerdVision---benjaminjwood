@@ -12,7 +12,7 @@ $bjw_tracks = bjw_get_tracks();
 		<div class="section-head reveal">
 			<span class="mono"><?php echo esc_html( bjw_field( 'listen_eyebrow', __( 'A / B Listening Room', 'bjw-studio' ) ) ); ?></span>
 			<h2><?php echo esc_html( bjw_field( 'listen_heading', __( 'Hear the Difference', 'bjw-studio' ) ) ); ?></h2>
-			<p><?php echo esc_html( bjw_field( 'listen_intro', __( 'Both renders play in perfect sync. Mute, solo or crossfade between them to hear exactly what changed.', 'bjw-studio' ) ) ); ?></p>
+			<p><?php echo esc_html( bjw_field( 'listen_intro', __( 'Both renders run on one playhead and only one is ever audible. Switch between them mid-phrase to hear exactly what changed.', 'bjw-studio' ) ) ); ?></p>
 		</div>
 
 		<div class="rack reveal" data-tandem>
@@ -43,8 +43,7 @@ $bjw_tracks = bjw_get_tracks();
 									<span class="lane__name" data-lane-name><?php echo esc_html( $bjw_tracks[0][ $bjw_key ]['label'] ); ?></span>
 								</span>
 								<span class="lane__buttons">
-									<button type="button" class="lane__btn" data-lane-mute aria-pressed="false" title="<?php esc_attr_e( 'Mute', 'bjw-studio' ); ?>"><?php esc_html_e( 'M', 'bjw-studio' ); ?></button>
-									<button type="button" class="lane__btn" data-lane-solo aria-pressed="false" title="<?php esc_attr_e( 'Solo', 'bjw-studio' ); ?>"><?php esc_html_e( 'S', 'bjw-studio' ); ?></button>
+									<button type="button" class="lane__btn<?php echo 'a' === $bjw_key ? ' is-on' : ''; ?>" data-lane-solo aria-pressed="<?php echo 'a' === $bjw_key ? 'true' : 'false'; ?>" title="<?php echo esc_attr( sprintf( /* translators: %s: channel name. */ __( 'Hear %s', 'bjw-studio' ), $bjw_channel ) ); ?>"><?php esc_html_e( 'Listen', 'bjw-studio' ); ?></button>
 								</span>
 							</div>
 
@@ -58,11 +57,14 @@ $bjw_tracks = bjw_get_tracks();
 					<?php endforeach; ?>
 				</div>
 
-				<label class="mixer__crossfade">
-					<span><?php esc_html_e( 'Crossfade A', 'bjw-studio' ); ?></span>
-					<input type="range" min="0" max="100" value="50" data-crossfade aria-label="<?php esc_attr_e( 'Crossfade between version A and version B', 'bjw-studio' ); ?>">
-					<span><?php esc_html_e( 'B', 'bjw-studio' ); ?></span>
-				</label>
+				<div class="mixer__switch" role="group" aria-label="<?php esc_attr_e( 'Choose the version you hear', 'bjw-studio' ); ?>">
+					<span class="mono"><?php esc_html_e( 'Now hearing', 'bjw-studio' ); ?></span>
+					<?php foreach ( array( 'a', 'b' ) as $bjw_key ) : ?>
+						<button type="button" class="mixer__switch-btn<?php echo 'a' === $bjw_key ? ' is-on' : ''; ?>" data-ab-switch="<?php echo esc_attr( $bjw_key ); ?>" aria-pressed="<?php echo 'a' === $bjw_key ? 'true' : 'false'; ?>">
+							<?php echo esc_html( $bjw_tracks[0][ $bjw_key ]['label'] ); ?>
+						</button>
+					<?php endforeach; ?>
+				</div>
 			</div>
 		</div>
 	</div>
